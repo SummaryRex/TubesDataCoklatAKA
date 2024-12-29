@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Coklat</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <style>
+        .performance-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+        .table th {
+            background-color: #f8f9fa;
+        }
+        .performance-title {
+            color: #333;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4 text-danger">Data Coklat</h1>
+        
+        <!-- Form pencarian -->
+        <form method="POST" class="mb-4">
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <input type="number" step="0.1" name="score" class="form-control" placeholder="Masukkan Skor" required>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-danger">Cari</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Message Alert -->
+        {% if message %}
+            <div class="alert alert-warning text-center mt-3">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        <!-- Analisis Performa -->
+        {% if analysis_data %}
+        <div class="performance-card">
+            <h3 class="performance-title">Analisis Performa Algoritma Pencarian</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <h5>Waktu Eksekusi:</h5>
+                        <div class="time-info">
+                            <p>Pencarian Iteratif: {{ "%.6f"|format(analysis_data.iterative_time) }} detik</p>
+                            <p>Pencarian Rekursif: {{ "%.6f"|format(analysis_data.recursive_time) }} detik</p>
+                            <p>Total Data: {{ analysis_data.total_data }} record</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <img src="{{ url_for('static', filename='performance_plot.png') }}" 
+                         alt="Grafik Performa" 
+                         class="img-fluid rounded shadow-sm">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Hasil Pencarian Iteratif -->
+        <div class="table-container">
+            <h3 class="text-primary">Hasil Pencarian Iteratif</h3>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nama</th>
+                        <th>Asal</th>
+                        <th>Cocoa Percent</th>
+                        <th>Tahun Produksi</th>
+                        <th>Rating</th>
+                        <th>Negara</th>
+                        <th>Skor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if results_iterative %}
+                        {% for item in results_iterative %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.nama }}</td>
+                                <td>{{ item.asal }}</td>
+                                <td>{{ item.cocoa_percent }}</td>
+                                <td>{{ item.tahun_produksi }}</td>
+                                <td>{{ item.rating }}</td>
+                                <td>{{ item.negara }}</td>
+                                <td>{{ item.skor }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center text-primary">
+                                {% if target_score is not none %}
+                                    Data dengan skor {{ target_score }} tidak ditemukan
+                                {% else %}
+                                    Lakukan Pencarian Data
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Hasil Pencarian Rekursif -->
+        <div class="table-container">
+            <h3 class="text-danger">Hasil Pencarian Rekursif</h3>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nama</th>
+                        <th>Asal</th>
+                        <th>Cocoa Percent</th>
+                        <th>Tahun Produksi</th>
+                        <th>Rating</th>
+                        <th>Negara</th>
+                        <th>Skor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if results_recursive %}
+                        {% for item in results_recursive %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.nama }}</td>
+                                <td>{{ item.asal }}</td>
+                                <td>{{ item.cocoa_percent }}</td>
+                                <td>{{ item.tahun_produksi }}</td>
+                                <td>{{ item.rating }}</td>
+                                <td>{{ item.negara }}</td>
+                                <td>{{ item.skor }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center text-danger">
+                                {% if target_score is not none %}
+                                    Data dengan skor {{ target_score }} tidak ditemukan
+                                {% else %}
+                                    Lakukan Pencarian Data
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
